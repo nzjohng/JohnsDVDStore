@@ -16,6 +16,7 @@ Customer Login
 <%@ page language="java" import="au.edu.swin.ict.dvdstore.*" %>
 <jsp:useBean id="customer_data" scope = 'page' class='au.edu.swin.ict.dvdstore.CustomerData' />
 
+
 <jsp:setProperty name="customer_data" property="*" />
 
 <%
