@@ -42,7 +42,7 @@ public class DVDStoreObjectify extends DVDStoreFactory {
 		ObjectifyService.register(CustomerData.class);
 		ObjectifyService.register(DVDData.class);
 		ObjectifyService.register(RentalData.class);
-
+		ObjectifyService.register(DVDTitleIndex.class);
 		
 		//if(getCustomerManager().findCustomer(1) == null) {
 		
@@ -52,10 +52,10 @@ public class DVDStoreObjectify extends DVDStoreFactory {
 		//}
 		
 		//if(getDVDManager().findDVD(1111) == null) {
-			ofy.put(new DVDData(1111,"Sleepless in Seattle","Romance",7.0, 7, "PG", 5));
-			ofy.put(new DVDData(1234,"Case 39","Horror",4.50, 7, "M", 3));
-			ofy.put(new DVDData(1212,"Sheakespeare in Love","Comedy",4.50, 7, "PG", 2));
-			ofy.put(new DVDData(9876,"Avatar","SciFi", 4.50, 7, "M", 3));
+			getDVDManager().insertDVD(new DVDData(1111,"Sleepless in Seattle","Romance",7.0, 7, "PG", 5));
+			getDVDManager().insertDVD(new DVDData(1234,"Case 39","Horror",4.50, 7, "M", 3));
+			getDVDManager().insertDVD(new DVDData(1212,"Sheakespeare in Love","Comedy",4.50, 7, "PG", 2));
+			getDVDManager().insertDVD(new DVDData(9876,"Avatar","SciFi", 4.50, 7, "M", 3));
 		//}
 			
 		getDVDManager().findDVD("a","");

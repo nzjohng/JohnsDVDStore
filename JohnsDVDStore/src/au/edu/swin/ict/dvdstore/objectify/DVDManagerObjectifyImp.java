@@ -55,17 +55,33 @@ public class DVDManagerObjectifyImp implements DVDManager
     public void insertDVD(DVDData data) throws Exception
     {
     	DVDStoreObjectify.getInstance().getObjectify().put(data);
+    	indexDVD(data);
     }
 
 	public void updateDVD(DVDData data) throws Exception
 	{
 		DVDStoreObjectify.getInstance().getObjectify().put(data);
+		indexDVD(data);
 	}
 
     public void deleteDVD(DVDData data) throws Exception
 	{
     	DVDStoreObjectify.getInstance().getObjectify().delete(data);
+    	deleteDVDIndex(data);
 	}
+    
+    public void indexDVD(DVDData data) {
+    	
+    }
+    
+    public void deleteDVDIndex(DVDData data) {
+    	Query<DVDTitleIndex> q;
+    	Objectify ofy = DVDStoreObjectify.getInstance().getObjectify();
+    	
+    	q = ofy.query(DVDTitleIndex.class).filter("id = ",data.getID());
+    
+    	ofy.delete(q);
+    }
 
 }
 

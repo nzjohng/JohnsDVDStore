@@ -100,6 +100,11 @@ public class DVDData implements Serializable
     {
 		num_copies = num;
     }
+    
+    public void setNights(int nights)
+    {
+    	this.nights = nights;
+    }
 
 
     public String getAction()

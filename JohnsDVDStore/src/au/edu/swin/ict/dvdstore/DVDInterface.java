@@ -43,12 +43,22 @@ public class DVDInterface implements Serializable
         // setDVD(null);
 
 		if(action.equals("Search"))
-			doFindDVD(DVD_data);
+			doSearchDVD(DVD_data);
 		else if(action.equals("Details"))
 			doDVDDetails(DVD_data);
 		else if(action.equals("Rent"))
 			doDVDRental(customer_data, DVD_data);
-
+		
+		else if(action.equals("find"))
+			doFindDVD(DVD_data);
+		else if(action.equals("new"))
+			doNewDVD(DVD_data);
+		else if(action.equals("add"))
+			doAddDVD(DVD_data);
+		else if(action.equals("update"))
+			doUpdateDVD(DVD_data);
+		else if(action.equals("delete"))
+			doFindDVD(DVD_data);
 	}
 
 	private String message = "";
@@ -75,7 +85,7 @@ public class DVDInterface implements Serializable
 		return DVDs;
 	}
 
-	public void doFindDVD(DVDData DVD_data)
+	public void doSearchDVD(DVDData DVD_data)
 	{
 		if(DVD_data.getTitle() == null)
 			setMessage("Enter a title value");
@@ -162,6 +172,84 @@ public class DVDInterface implements Serializable
 		}
 	}
 	
+	public void doFindDVD(DVDData DVD_data)
+	{
+		if(DVD_data.getID() == 0)
+			setMessage("Enter an id to locate");
+		else
+		{
+			try {
+                          DVDData found = getDVDManager().findDVD(DVD_data.getID());
+                          
+                          DVD_data.setTitle(found.getTitle()) ;
+                          DVD_data.setCategory(found.getCategory());
+                          DVD_data.setCost(found.getCost());
+                          DVD_data.setNights(found.getNights());
+                          DVD_data.setNumCopies(found.getNumCopies());
+                          
+                          if(found != null)
+                        	  setMessage("DVD "+DVD_data.getID()+" found");
+                          else
+                        	  setMessage("DVD "+DVD_data.getID()+" NOT found");
+			} catch (Exception e) {
+				setMessage("Error selecting DVDs: "+e.toString());
+			}
+		}
+	}
+
+	public void doNewDVD(DVDData DVD_data)
+	{
+		DVD_data.setID(-1111);
+		DVD_data.setTitle("<Title>");
+		DVD_data.setCategory("");
+		DVD_data.setNights(1);
+		DVD_data.setNumCopies(1);
+		DVD_data.setCost(7.00);
+	}
+	
+	public void doAddDVD(DVDData DVD_data)
+	{
+		if(DVD_data.getID() == 0 || DVD_data.getTitle() == null)
+			setMessage("Enter details for DVD to add");
+		else
+		{
+			try {
+                          DVDData found = getDVDManager().findDVD(DVD_data.getID());
+                          if(found != null){
+	                          setMessage("DVD ID already used");
+                          }
+                          else {
+                        	  getDVDManager().insertDVD(DVD_data); 
+                        	  setMessage("Added new DVD "+DVD_data.getID());
+                          }
+
+			} catch (Exception e) {
+				setMessage("Error selecting DVDs: "+e.toString());
+			}
+		}
+	}
+
+	
+	public void doUpdateDVD(DVDData DVD_data)
+	{
+		if(DVD_data.getID() == 0)
+			setMessage("Enter an id to locate");
+		else
+		{
+			try {
+                          DVDData found = getDVDManager().findDVD(DVD_data.getID());
+                          if(found != null){
+	                          getDVDManager().updateDVD(DVD_data);
+	                          setMessage("DVD updated");
+                          }
+                          else
+                        	  setMessage("couldn't find DVD "+DVD_data.getID());
+
+			} catch (Exception e) {
+				setMessage("Error selecting DVDs: "+e.toString());
+			}
+		}
+	}
 
 	
 }
