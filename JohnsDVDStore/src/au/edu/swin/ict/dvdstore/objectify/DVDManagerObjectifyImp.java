@@ -40,9 +40,15 @@ public class DVDManagerObjectifyImp implements DVDManager
         
         Query<DVDTitleIndex> q;
         
+        // Find all DVD title word indexes for words starting with "title_part" characters...
+        //
+        // to get around objectify querying limitations and mimics SQL  LIKE "...%" WHERE clause component
+        //
+        // could extend to search for > 1 word part the title (need to take intersection of results)
+        //
         q = ofy.query(DVDTitleIndex.class).filter("word >=", title_part).filter("word <", title_part+"\uFFFD");
         
-       // List<DVDTitleIndex> l = ofy.query(DVDTitleIndex.class).list();
+       // List<DVDTitleIndex> l = ofy.query(DVDTitleIndex.class).list();  // for testing...
 
         
         /*
@@ -75,11 +81,16 @@ public class DVDManagerObjectifyImp implements DVDManager
 
     public void deleteDVD(DVDData data) throws Exception
 	{
-    	DVDStoreObjectify.getInstance().getObjectify().delete(data);
     	deleteDVDIndex(data);
+    	DVDStoreObjectify.getInstance().getObjectify().delete(data);
 	}
     
+    /*
+     * Create an index of form <dvd_id,word> so can search for DVDs for parts of title words
+     * 
+     */
     public void indexDVD(DVDData data) {
+    
     	deleteDVDIndex(data);
     	
     	Objectify ofy = DVDStoreObjectify.getInstance().getObjectify();
@@ -93,7 +104,7 @@ public class DVDManagerObjectifyImp implements DVDManager
     			if(start < i) {
     				String word = new String(to_index,start,i-start);
     				System.out.println(word);
-    				DVDTitleIndex dt = new DVDTitleIndex(data.getID()+word+start,data.getID(),word);
+    				DVDTitleIndex dt = new DVDTitleIndex(data.getID()+"."+word+"."+start,data.getID(),word);
     				ofy.put(dt);
     			}
     			start = i+1;
@@ -102,6 +113,10 @@ public class DVDManagerObjectifyImp implements DVDManager
     	}
     }
     
+    /*
+     * Remove all word indexing for this DVD
+     * 
+     */
     public void deleteDVDIndex(DVDData data) {
     	Query<DVDTitleIndex> q;
     	Objectify ofy = DVDStoreObjectify.getInstance().getObjectify();
