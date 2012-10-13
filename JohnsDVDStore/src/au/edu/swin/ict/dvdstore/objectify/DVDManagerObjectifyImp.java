@@ -38,15 +38,24 @@ public class DVDManagerObjectifyImp implements DVDManager
         // change to List<DVDData> & ArrayList() !!
         Vector<DVDData> result = new Vector<DVDData>();
         
-        Query<DVDData> q;
+        Query<DVDTitleIndex> q;
         
+        q = ofy.query(DVDTitleIndex.class).filter("word >=", title_part).filter("word <", title_part+"\uFFFD");
+        
+       // List<DVDTitleIndex> l = ofy.query(DVDTitleIndex.class).list();
+
+        
+        /*
         if(!acategory.equals(""))
         	q = ofy.query(DVDData.class).filter("title > ", title_part).filter("category =", acategory);
         else
         	q = ofy.query(DVDData.class).filter("title > ", title_part);
+        */
         
-        for (DVDData dvd: q) {
-            result.add(dvd);
+        for (DVDTitleIndex dt: q) {
+        	DVDData dvd = ofy.get(DVDData.class,dt.id);
+        	if(dvd != null)
+        		result.add(dvd);
         }
 
         return result;
@@ -71,7 +80,26 @@ public class DVDManagerObjectifyImp implements DVDManager
 	}
     
     public void indexDVD(DVDData data) {
+    	deleteDVDIndex(data);
     	
+    	Objectify ofy = DVDStoreObjectify.getInstance().getObjectify();
+    	
+    	char to_index[] = (data.getTitle()+" ").toCharArray();
+    	int i = 0;
+    	int start = 0;
+    	int l = to_index.length;
+    	while(i < l) {
+    		if(to_index[i] == ' ') {
+    			if(start < i) {
+    				String word = new String(to_index,start,i-start);
+    				System.out.println(word);
+    				DVDTitleIndex dt = new DVDTitleIndex(data.getID()+word+start,data.getID(),word);
+    				ofy.put(dt);
+    			}
+    			start = i+1;
+    		}
+    		i++;
+    	}
     }
     
     public void deleteDVDIndex(DVDData data) {
