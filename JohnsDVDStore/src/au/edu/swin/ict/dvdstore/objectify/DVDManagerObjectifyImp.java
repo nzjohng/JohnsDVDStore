@@ -40,13 +40,15 @@ public class DVDManagerObjectifyImp implements DVDManager
         
         Query<DVDTitleIndex> q;
         
+        String search = title_part.toLowerCase();
+        
         // Find all DVD title word indexes for words starting with "title_part" characters...
         //
         // to get around objectify querying limitations and mimics SQL  LIKE "...%" WHERE clause component
         //
         // could extend to search for > 1 word part the title (need to take intersection of results)
         //
-        q = ofy.query(DVDTitleIndex.class).filter("word >=", title_part).filter("word <", title_part+"\uFFFD");
+        q = ofy.query(DVDTitleIndex.class).filter("word >=", search).filter("word <", search+"\uFFFD");
         
        // List<DVDTitleIndex> l = ofy.query(DVDTitleIndex.class).list();  // for testing...
 
@@ -95,7 +97,7 @@ public class DVDManagerObjectifyImp implements DVDManager
     	
     	Objectify ofy = DVDStoreObjectify.getInstance().getObjectify();
     	
-    	char to_index[] = (data.getTitle()+" ").toCharArray();
+    	char to_index[] = (data.getTitle()+" ").toLowerCase().toCharArray();
     	int i = 0;
     	int start = 0;
     	int l = to_index.length;
@@ -112,6 +114,7 @@ public class DVDManagerObjectifyImp implements DVDManager
     		i++;
     	}
     }
+
     
     /*
      * Remove all word indexing for this DVD
